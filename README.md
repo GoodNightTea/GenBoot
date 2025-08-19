@@ -1,6 +1,6 @@
 ## Workflow is pretty easy:
 use the nasm assembler to assemble all .asm i.e:
-  * nasm -f bin boot.asm -o boot.bin
+  * nasm -f bin <file.asm> -o <file.bin>
     
 create and inject the checksum for boot.bin and [optional] verify it, its pretty basic as its a poc
   * python3 checksum_patcher.py <bootloader.bin> verify 
