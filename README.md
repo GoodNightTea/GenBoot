@@ -1,11 +1,20 @@
+# This is a very simple bootloader + kernel which I will be expanding with features into a very small OS.
+### Note: This will not be the next ubuntu, this is just my graduation project. If bugs are found please reach out! 
+
 ## Workflow is pretty easy:
-use the nasm assembler to assemble all .asm i.e:
-  * nasm -f bin <file.asm> -o <file.bin>
-    
-create and inject the checksum for boot.bin and [optional] verify it, its pretty basic as its a poc
-  * python3 checksum_patcher.py <bootloader.bin> verify 
+This bootchain uses the NASM assembler. The kernel files are seperated and use the -I include option to tie them together.
+When changes are made or you want to compile it yourself:
+* nasm -f bin *.asm -o build/*.bin
+  if a file is included, the -I options is needed
+* nasm -f bin -I kernel/ kernel/*.asm -o build/*bin
 
- compile all with the genfs_builder into a .img
-  * python3 genfs_builder.py <bootloader.bin> <output.img> [file1] [file2]
+after that we patch all the files together via my own File System calle GenFS:
 
-it should launch and display the basic kernels print
+* python3 tools/genfs_v2_builder.py build/boot.bin build/images/genos.img build/stage2.bin build/kernel.bin
+
+after that it can be launched via qemu using a floppy format:
+
+* qemu-system-x86_64 -drive file=build/images/genos.img,format=raw,if=floppy
+
+it should launch and display the basic prints, a heartbeat and colors via VGA!
+### Discord: GoodNightTea
