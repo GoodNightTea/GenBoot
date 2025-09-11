@@ -1,20 +1,49 @@
-# This is a very simple bootloader + kernel which I will be expanding with features into a very small OS.
-### Note: This will not be the next ubuntu, this is just my graduation project. If bugs are found please reach out! 
+# GenOS - Simple 32-bit Operating System
 
-## Workflow is pretty easy:
-This bootchain uses the NASM assembler. The kernel files are seperated and use the -I include option to tie them together.
-When changes are made or you want to compile it yourself:
-* nasm -f bin *.asm -o build/*.bin
-  if a file is included, the -I options is needed
-* nasm -f bin -I kernel/ kernel/*.asm -o build/*bin
+This is a minimalist bootloader and kernel system built as a graduation project. This includes my experience creating bootloaders, protected mode transitions, interrupt handling, and VGA text display.
 
-after that we patch all the files together via my own File System calle GenFS:
+**Note:** This will not be the next ubuntu, I just want to learn how to build OS from scratch in x86 asm!
 
-* python3 tools/genfs_v2_builder.py build/boot.bin build/images/genos.img build/stage2.bin build/kernel.bin
+## Features
 
-after that it can be launched via qemu using a floppy format:
+- Multi-stage bootloader (16-bit → 32-bit transition)
+- 32-bit protected mode kernel
+- Interrupt handling with PIC initialization  
+- VGA text mode display with colors
+- Modular architecture using NASM includes
+- Custom file system (GenFS v2)
 
-* qemu-system-x86_64 -drive file=build/images/genos.img,format=raw,if=floppy
+## Architecture
 
-it should launch and display the basic prints, a heartbeat and colors via VGA!
-### Discord: GoodNightTea
+- **Stage 1**: 16-bit BIOS bootloader, handles disk I/O
+- **Stage 2**: Protected mode transition and kernel loading
+- **Kernel**: 32-bit kernel with VGA and interrupt subsystems
+- **VGA Driver**: Parameter-based display functions
+
+## Build Instructions
+
+### Prerequisites
+- NASM assembler
+- Python 3
+- QEMU (for testing)
+
+### Compilation
+
+## Compile bootloader
+nasm -f bin boot.asm -o build/boot.bin
+
+## Compile Stage 2  
+nasm -f bin stage2.asm -o build/stage2.bin
+
+## Compile kernel (with includes)
+nasm -f bin -I kernel/ kernel/main_kernel.asm -o build/kernel.bin
+
+## Create disk image using GenFS
+python3 tools/genfs_v2_builder.py build/boot.bin build/images/genos.img build/stage2.bin build/kernel.bin
+
+## Test with QEMU
+qemu-system-x86_64 -drive file=build/images/genos.img,format=raw,if=floppy
+
+## Contact
+#### Discord: GoodNightTea
+Found a bug or have suggestions? Please reach out!
